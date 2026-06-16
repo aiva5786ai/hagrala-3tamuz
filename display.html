@@ -107,9 +107,18 @@
   @keyframes fall { 0%{ transform: translateY(-10vh) rotate(0); opacity:1 } 100%{ transform: translateY(110vh) rotate(720deg); opacity:0 } }
 
   .hidden { display:none !important; }
+
+  /* רקע התמונה שנשלחה — כהה ומוחשך */
+  body.screen .scene {
+    background:
+      linear-gradient(rgba(8,5,2,0.55), rgba(8,5,2,0.72)),
+      url('bg-stage.jpg') center center / cover no-repeat;
+  }
+  body.screen .scene::before, body.screen .scene::after { display: none; } /* בתמונה כבר יש זרקורים */
+  body.screen .floor { display: none; } /* בתמונה כבר יש רצפה משתקפת */
 </style>
 </head>
-<body>
+<body class="screen">
 <div class="scene"></div><div class="floor"></div><div class="frame"></div>
 <div class="bh">ב"ה</div>
 
@@ -186,7 +195,7 @@ function render() {
     card.className = "namecard";
     card.dataset.id = p.id;
     card.style.animationDelay = `0s, ${(idx % 12) * .25}s`;
-    card.innerHTML = `<div class="nm">${escapeHtml(p.name)}</div><div class="ch">${escapeHtml(p.choice)}</div>`;
+    card.innerHTML = `<div class="nm">${escapeHtml(p.name)}</div>`;
     grid.appendChild(card);
   });
 }
@@ -301,7 +310,7 @@ function draw() {
   setTimeout(() => {
     tickets[winIdx].style.opacity = "0";
     wname.textContent = p.name;
-    wchoice.textContent = "💛 " + p.choice;
+    wchoice.textContent = "";
     raffleTitle.textContent = "🎉 מזל טוב! 🎉";
     winnerEl.classList.add("reveal");
     burstConfetti();
