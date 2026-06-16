@@ -193,7 +193,7 @@ function render() {
 function escapeHtml(s){ return (s||"").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 async function load() {
-  const { data, error } = await supabase.from(TABLE).select("*").order("created_at", { ascending: true });
+  const { data, error } = await supabase.from(TABLE).select("id,name,choice,created_at").order("created_at", { ascending: true });
   if (!error && data) { people = data; render(); }
 }
 load();
