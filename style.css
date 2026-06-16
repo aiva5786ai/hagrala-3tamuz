@@ -1,3 +1,15 @@
+/* ===== פונט אלמוני ===== */
+@font-face { font-family: "Almoni Neue"; font-weight: 400; font-display: swap;
+  src: url("fonts/AlmoniNeue-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Almoni Neue"; font-weight: 500; font-display: swap;
+  src: url("fonts/AlmoniNeue-Medium.woff2") format("woff2"); }
+@font-face { font-family: "Almoni Neue"; font-weight: 700; font-display: swap;
+  src: url("fonts/AlmoniNeue-Bold.woff2") format("woff2"); }
+@font-face { font-family: "Almoni Neue"; font-weight: 800; font-display: swap;
+  src: url("fonts/AlmoniNeue-Bold.woff2") format("woff2"); }
+@font-face { font-family: "Almoni Neue"; font-weight: 900; font-display: swap;
+  src: url("fonts/AlmoniNeue-Black.woff2") format("woff2"); }
+
 /* ===== בסיס וערכת הזהב ===== */
 :root {
   --gold: #f0b94a;
@@ -14,7 +26,7 @@
 
 html, body {
   height: 100%;
-  font-family: "Heebo", "Assistant", system-ui, sans-serif;
+  font-family: "Almoni Neue", "Heebo", "Assistant", system-ui, sans-serif;
   color: var(--text);
   background: var(--bg-0);
   overflow-x: hidden;

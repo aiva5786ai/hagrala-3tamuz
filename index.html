@@ -72,11 +72,16 @@
   .thanks p { font-size: 17px; opacity:.9; line-height:1.5; }
   @keyframes pop { from { transform: scale(.85); opacity:0 } to { transform: scale(1); opacity:1 } }
   .hidden { display: none !important; }
+
+  /* רקע שממשיך את הגרדיאנט של הגרפיקה: חום (כמו תחתית הגרפיקה) → שחור */
+  body.form-page .scene {
+    background: linear-gradient(180deg, #311d0c 0%, #261405 30%, #160c04 62%, #000000 100%);
+  }
+  body.form-page .scene::before, body.form-page .scene::after { display: none; }
 </style>
 </head>
 <body class="form-page">
 <div class="scene"></div><div class="frame"></div>
-<div class="bh">ב"ה</div>
 
 <div class="wrap">
   <!-- גרפיקת הרבי. אם אין קובץ — מוצג טקסט חלופי -->
@@ -84,7 +89,7 @@
 
   <div class="lead">
     <h1 class="gold-text">בחרי החלטה טובה</h1>
-    <p>וצבעי אותה — קבלה טובה עד ל<b>ח"י אלול</b>,<br>וכנסי להגרלה על <b>שובר ארוחת בוקר זוגית בבית העוגות</b> 🎁</p>
+    <p>ובצעי אותה עד <b>ח"י אלול</b>,<br>וכנסי להגרלה על <b>שובר ארוחת בוקר זוגית בבית העוגות</b> 🎁</p>
   </div>
 
   <div class="inner">
