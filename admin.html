@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ניהול • ג' תמוז</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+<style>
+  .wrap { max-width: 900px; margin: 0 auto; padding: 40px 16px 60px; }
+  h1 { text-align: center; font-size: clamp(28px, 6vw, 42px); margin-bottom: 6px; }
+  .sub { text-align: center; opacity: .8; margin-bottom: 26px; }
+
+  .gate { max-width: 360px; margin: 8vh auto 0; text-align: center; }
+  .gate input {
+    width: 100%; padding: 15px 18px; font-size: 17px; font-family: inherit; text-align: center;
+    color: var(--text); background: rgba(0,0,0,.4); border: 1.5px solid rgba(214,169,84,.4);
+    border-radius: 14px; outline: none; margin: 14px 0;
+  }
+  .gate input:focus { border-color: var(--gold); }
+  .gate .err { color: #ff9a8a; min-height: 20px; margin-top: 8px; }
+
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .bar .count { font-size: 18px; } .bar .count b { color: var(--gold-light); font-size: 22px; }
+  .bar .actions { display: flex; gap: 10px; }
+  .btn-sm { font-family: inherit; cursor: pointer; border: 1.5px solid var(--gold); background: rgba(0,0,0,.3);
+    color: var(--gold-light); border-radius: 999px; padding: 9px 18px; font-size: 14px; font-weight: 700; }
+  .btn-sm:hover { background: rgba(240,185,74,.15); }
+
+  .tbl { width: 100%; border-collapse: collapse; background: rgba(0,0,0,.28); border-radius: 14px; overflow: hidden; }
+  .tbl th, .tbl td { padding: 12px 14px; text-align: right; border-bottom: 1px solid rgba(214,169,84,.18); font-size: 15px; }
+  .tbl th { background: rgba(240,185,74,.14); color: var(--gold-light); font-weight: 800; }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl a { color: var(--gold-light); text-decoration: none; font-weight: 700; }
+  .tbl .idx { opacity: .6; }
+  .wa { color: #7CFC9A !important; }
+  .hidden { display: none !important; }
+  @media (max-width: 600px) { .tbl .ch-col, .tbl .t-col { display: none; } }
+</style>
+</head>
+<body>
+<div class="scene"></div><div class="frame"></div>
+<div class="bh">ב"ה</div>
+
+<div class="wrap">
+  <!-- שער סיסמה -->
+  <div class="gate" id="gate">
+    <h1 class="gold-text">דף ניהול</h1>
+    <p class="sub">ג' תמוז · רשימת המשתתפים</p>
+    <input id="pass" type="password" placeholder="הזיני סיסמה" />
+    <button class="btn-gold" id="enterBtn" style="width:100%">כניסה</button>
+    <div class="err" id="gateErr"></div>
+  </div>
+
+  <!-- תוכן -->
+  <div id="panel" class="hidden">
+    <h1 class="gold-text">רשימת המשתתפים</h1>
+    <p class="sub">ג' תמוז · החלטות טובות והגרלה</p>
+    <div class="bar">
+      <div class="count">סה"כ: <b id="count">0</b></div>
+      <div class="actions">
+        <button class="btn-sm" id="refresh">רענון 🔄</button>
+        <button class="btn-sm" id="csv">ייצוא לאקסל ⬇️</button>
+      </div>
+    </div>
+    <table class="tbl">
+      <thead><tr>
+        <th class="idx">#</th><th>שם</th><th>טלפון</th><th class="ch-col">החלטות</th><th class="t-col">נשלח</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_URL, SUPABASE_KEY } from "./config.js";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let pass = "";
+let data = [];
+
+function esc(s){ return (s||"").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function waLink(phone){ const d = (phone||"").replace(/\D/g,""); return d.startsWith("0") ? "972"+d.slice(1) : d; }
+function fmtTime(t){ try { return new Date(t).toLocaleString("he-IL",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}); } catch(e){ return ""; } }
+
+async function fetchData() {
+  const { data: rows, error } = await supabase.rpc("get_hachlatot", { pass });
+  if (error) throw error;
+  return rows || [];
+}
+
+function render() {
+  document.getElementById("count").textContent = data.length;
+  const tbody = document.getElementById("rows");
+  tbody.innerHTML = data.map((r, i) => `
+    <tr>
+      <td class="idx">${i+1}</td>
+      <td>${esc(r.name)}</td>
+      <td>
+        <a href="tel:${esc(r.phone)}">${esc(r.phone)}</a>
+        &nbsp;·&nbsp;
+        <a class="wa" href="https://wa.me/${waLink(r.phone)}" target="_blank">וואטסאפ</a>
+      </td>
+      <td class="ch-col">${esc(r.choice)}</td>
+      <td class="t-col">${fmtTime(r.created_at)}</td>
+    </tr>`).join("");
+}
+
+function exportCsv() {
+  const head = ["שם","טלפון","החלטות","נשלח"];
+  const lines = [head.join(",")].concat(
+    data.map(r => [r.name, r.phone, (r.choice||"").replaceAll(","," / "), fmtTime(r.created_at)]
+      .map(v => `"${(v||"").toString().replaceAll('"','""')}"`).join(","))
+  );
+  const blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "hachlatot-3tamuz.csv";
+  a.click();
+}
+
+async function enter() {
+  pass = document.getElementById("pass").value;
+  const err = document.getElementById("gateErr");
+  err.textContent = "טוען...";
+  try {
+    data = await fetchData();
+    document.getElementById("gate").classList.add("hidden");
+    document.getElementById("panel").classList.remove("hidden");
+    render();
+    // עדכון חי
+    supabase.channel("admin-live").on("postgres_changes",
+      { event: "INSERT", schema: "public", table: "hachlatot_3tamuz" },
+      async () => { try { data = await fetchData(); render(); } catch(e){} }
+    ).subscribe();
+  } catch (e) {
+    err.textContent = "סיסמה שגויה";
+  }
+}
+
+document.getElementById("enterBtn").onclick = enter;
+document.getElementById("pass").addEventListener("keydown", e => { if (e.key === "Enter") enter(); });
+document.getElementById("refresh").onclick = async () => { try { data = await fetchData(); render(); } catch(e){} };
+document.getElementById("csv").onclick = exportCsv;
+</script>
+</body>
+</html>
