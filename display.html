@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>התוועדות ג' תמוז • החלטות טובות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+<style>
+  .stage { height: 100vh; display: flex; flex-direction: column; padding: 26px 40px 0; }
+  .topbar { text-align: center; flex: 0 0 auto; }
+  .topbar .kicker { font-size: 18px; color: var(--gold-light); letter-spacing: 1px; opacity:.9; }
+  .topbar h1 { font-size: clamp(40px, 6.5vw, 84px); line-height: 1; margin-top: 6px; }
+  .topbar .count { margin-top: 10px; font-size: 18px; color: var(--text); opacity:.8; }
+  .topbar .count b { color: var(--gold-light); font-size: 22px; }
+
+  /* רשת השמות */
+  .grid-wrap { flex: 1 1 auto; overflow: hidden; margin-top: 18px; position: relative; }
+  .grid {
+    display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-content: flex-start;
+    height: 100%; overflow-y: auto; padding: 8px 4px 20px; scrollbar-width: thin;
+  }
+  .grid::-webkit-scrollbar { width: 6px; }
+  .grid::-webkit-scrollbar-thumb { background: rgba(214,169,84,.4); border-radius: 3px; }
+
+  .namecard {
+    position: relative;
+    padding: 14px 22px; min-width: 140px;
+    border: 1.5px solid rgba(214,169,84,0.35);
+    border-radius: 16px;
+    background: linear-gradient(160deg, rgba(255,216,122,0.10), rgba(0,0,0,0.25));
+    box-shadow: 0 6px 22px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+    text-align: center;
+    animation: enterCard .7s cubic-bezier(.2,.8,.2,1) both, floaty 6s ease-in-out infinite;
+  }
+  .namecard .nm { font-size: 22px; font-weight: 800; color: #fff4d6; }
+  .namecard .ch { font-size: 12.5px; margin-top: 5px; color: var(--gold-light); opacity:.8; max-width: 230px; line-height:1.35; }
+  @keyframes enterCard { from { opacity:0; transform: translateY(26px) scale(.9); } to { opacity:1; transform: translateY(0) scale(1);} }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+  .empty { width:100%; text-align:center; margin-top: 12vh; font-size: 22px; opacity:.6; }
+
+  /* תחתית */
+  .footer { flex: 0 0 auto; padding: 16px 0 26px; text-align: center; position: relative; z-index: 6; }
+  .prize-banner { font-size: 17px; margin-bottom: 14px; color: var(--text); opacity:.92; }
+  .prize-banner b { color: var(--gold-light); }
+
+  /* ===== שכבת ההגרלה ===== */
+  .raffle { position: fixed; inset: 0; z-index: 50; display: none; }
+  .raffle.show { display: block; }
+  .raffle .veil { position:absolute; inset:0; background: radial-gradient(circle at 50% 45%, rgba(20,12,4,.86), rgba(5,3,2,.97)); backdrop-filter: blur(3px); }
+  .raffle .head2 { position: relative; text-align:center; padding-top: 40px; }
+  .raffle .head2 h2 { font-size: clamp(30px,5vw,56px); }
+  .raffle .head2 p { margin-top: 8px; font-size: 17px; color: var(--gold-light); opacity:.85; }
+
+  .pile { position: absolute; inset: 0; pointer-events: none; }
+  .ticket {
+    position: absolute; width: 116px; height: 78px;
+    border-radius: 12px;
+    background:
+      linear-gradient(135deg, #fff6df 0%, #ffe5a3 45%, #f0b94a 100%);
+    box-shadow: 0 8px 22px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.35);
+    transition: transform 1s cubic-bezier(.2,.7,.2,1), opacity .5s ease;
+    transform-style: preserve-3d;
+    display: grid; place-items: center;
+  }
+  .ticket::before { /* קו קיפול */
+    content:""; position:absolute; top:0; bottom:0; right:50%; width:1px;
+    background: repeating-linear-gradient(transparent, transparent 4px, rgba(184,128,31,.5) 4px, rgba(184,128,31,.5) 8px);
+  }
+  .ticket .seal { width: 30px; height: 30px; border-radius: 50%;
+    background: radial-gradient(circle, #b8801f, #7a5210);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,.4); display:grid; place-items:center;
+    color:#ffe6a8; font-size:15px; }
+
+  /* כרטיס הזוכה במרכז */
+  .winner {
+    position: absolute; top: 50%; left: 50%;
+    width: min(560px, 86vw); padding: 40px 30px;
+    transform: translate(-50%, -50%) scale(.6); opacity: 0;
+    border-radius: 24px; text-align: center;
+    background: linear-gradient(160deg, #fff7e0, #ffd87a 55%, #e6a93a);
+    box-shadow: 0 30px 90px rgba(240,185,74,.5), 0 0 0 3px rgba(255,255,255,.4);
+    transition: transform .7s cubic-bezier(.2,1.3,.4,1), opacity .5s ease;
+    pointer-events: none;
+  }
+  .winner.reveal { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  .winner .lbl { font-size: 20px; font-weight:800; color:#7a5210; letter-spacing: 2px; }
+  .winner .wname { font-size: clamp(38px, 7vw, 64px); font-weight: 900; color:#3a2400; margin: 10px 0 6px; line-height:1.05; }
+  .winner .wchoice { font-size: 17px; color:#6b4a12; font-weight:600; }
+
+  .raffle .controls {
+    position: absolute; bottom: 46px; left: 0; right: 0;
+    display: flex; gap: 16px; justify-content: center; z-index: 60;
+  }
+  .btn-ghost {
+    font-family: inherit; cursor:pointer; border:1.5px solid var(--gold);
+    background: rgba(0,0,0,.3); color: var(--gold-light);
+    border-radius: 999px; padding: 14px 30px; font-size: 17px; font-weight: 700;
+    transition: all .15s ease;
+  }
+  .btn-ghost:hover { background: rgba(240,185,74,.15); }
+
+  /* קונפטי */
+  .confetti { position: fixed; top: -10px; width: 10px; height: 14px; z-index: 70; opacity:0; }
+  @keyframes fall { 0%{ transform: translateY(-10vh) rotate(0); opacity:1 } 100%{ transform: translateY(110vh) rotate(720deg); opacity:0 } }
+
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<div class="scene"></div><div class="floor"></div><div class="frame"></div>
+<div class="bh">ב"ה</div>
+
+<div class="stage">
+  <div class="topbar">
+    <div class="kicker">יומא דהילולא • ג' תמוז</div>
+    <h1 class="gold-text">התוועדות ג' תמוז</h1>
+    <div class="count">ההחלטות הטובות שלנו · <b id="count">0</b></div>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="grid" id="grid">
+      <div class="empty" id="empty">ממתינים להחלטות הטובות הראשונות… ✨</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="prize-banner">🎁 ההגרלה על <b>שובר ארוחת בוקר זוגית בבית העוגות</b></div>
+    <button class="btn-gold" id="openRaffle">🎟️ פתיחת ההגרלה</button>
+  </div>
+</div>
+
+<!-- שכבת ההגרלה -->
+<div class="raffle" id="raffle">
+  <div class="veil"></div>
+  <div class="head2">
+    <h2 class="gold-text" id="raffleTitle">מערבבים את הפתקים…</h2>
+    <p>🎁 שובר ארוחת בוקר זוגית בבית העוגות</p>
+  </div>
+  <div class="pile" id="pile"></div>
+  <div class="winner" id="winner">
+    <div class="lbl">🎉 הזוכה בהגרלה 🎉</div>
+    <div class="wname" id="wname"></div>
+    <div class="wchoice" id="wchoice"></div>
+  </div>
+  <div class="controls">
+    <button class="btn-gold" id="drawBtn">שליפת פתק 🎲</button>
+    <button class="btn-ghost" id="againBtn">הגרלה חוזרת</button>
+    <button class="btn-ghost" id="closeBtn">סגירה</button>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_URL, SUPABASE_KEY, TABLE } from "./config.js";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ---------- חלקיקי רקע ---------- */
+for (let i = 0; i < 26; i++) {
+  const s = document.createElement("div");
+  s.className = "spark";
+  const size = 3 + Math.random() * 8;
+  s.style.width = s.style.height = size + "px";
+  s.style.left = Math.random() * 100 + "vw";
+  s.style.animationDuration = (9 + Math.random() * 13) + "s";
+  s.style.animationDelay = (-Math.random() * 18) + "s";
+  document.body.appendChild(s);
+}
+
+/* ---------- נתונים חיים ---------- */
+let people = [];           // {id, name, phone, choice}
+const grid = document.getElementById("grid");
+const empty = document.getElementById("empty");
+const countEl = document.getElementById("count");
+
+function render() {
+  countEl.textContent = people.length;
+  empty.style.display = people.length ? "none" : "block";
+  // נצייר רק חדשים כדי לא לאפס אנימציות
+  const existing = new Set([...grid.querySelectorAll(".namecard")].map(e => e.dataset.id));
+  people.forEach((p, idx) => {
+    if (existing.has(p.id)) return;
+    const card = document.createElement("div");
+    card.className = "namecard";
+    card.dataset.id = p.id;
+    card.style.animationDelay = `0s, ${(idx % 12) * .25}s`;
+    card.innerHTML = `<div class="nm">${escapeHtml(p.name)}</div><div class="ch">${escapeHtml(p.choice)}</div>`;
+    grid.appendChild(card);
+  });
+}
+function escapeHtml(s){ return (s||"").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+async function load() {
+  const { data, error } = await supabase.from(TABLE).select("*").order("created_at", { ascending: true });
+  if (!error && data) { people = data; render(); }
+}
+load();
+
+supabase.channel("hachlatot-live")
+  .on("postgres_changes", { event: "INSERT", schema: "public", table: TABLE }, (payload) => {
+    if (!people.some(p => p.id === payload.new.id)) { people.push(payload.new); render(); }
+  })
+  .subscribe();
+
+/* ---------- ההגרלה ---------- */
+const raffle = document.getElementById("raffle");
+const pile = document.getElementById("pile");
+const winnerEl = document.getElementById("winner");
+const wname = document.getElementById("wname");
+const wchoice = document.getElementById("wchoice");
+const raffleTitle = document.getElementById("raffleTitle");
+const drawBtn = document.getElementById("drawBtn");
+const againBtn = document.getElementById("againBtn");
+
+let tickets = [];
+
+function buildTickets() {
+  pile.innerHTML = "";
+  tickets = [];
+  winnerEl.classList.remove("reveal");
+  const n = people.length;
+  const W = window.innerWidth, H = window.innerHeight;
+  people.forEach((p, i) => {
+    const t = document.createElement("div");
+    t.className = "ticket";
+    t.innerHTML = `<div class="seal">★</div>`;
+    t.dataset.idx = i;
+    // התחלה: במרכז מוערמים
+    t.style.left = (W/2 - 58) + "px";
+    t.style.top  = (H/2 - 39) + "px";
+    t.style.transform = "scale(0)";
+    pile.appendChild(t);
+    tickets.push(t);
+  });
+  // אנימציית פיזור + ערבוב
+  requestAnimationFrame(() => scatter());
+}
+
+function scatter() {
+  const W = window.innerWidth, H = window.innerHeight;
+  const padX = 120, topY = 170, botY = H - 160;
+  tickets.forEach((t) => {
+    const x = padX + Math.random() * (W - padX*2 - 116);
+    const y = topY + Math.random() * (botY - topY);
+    const r = (Math.random() * 60 - 30);
+    t.style.left = x + "px";
+    t.style.top = y + "px";
+    t.style.transform = `rotate(${r}deg) scale(1)`;
+  });
+}
+
+let shuffleTimer = null;
+function startShuffle() {
+  raffleTitle.textContent = "מערבבים את הפתקים…";
+  drawBtn.disabled = true;
+  let rounds = 0;
+  clearInterval(shuffleTimer);
+  shuffleTimer = setInterval(() => {
+    scatter();
+    if (++rounds >= 4) {
+      clearInterval(shuffleTimer);
+      raffleTitle.textContent = "הפתקים מוכנים — אפשר לשלוף!";
+      drawBtn.disabled = false;
+    }
+  }, 700);
+}
+
+function openRaffle() {
+  if (people.length === 0) { alert("עדיין אין משתתפים בהגרלה"); return; }
+  raffle.classList.add("show");
+  winnerEl.classList.remove("reveal");
+  drawBtn.classList.remove("hidden");
+  againBtn.classList.add("hidden");
+  buildTickets();
+  startShuffle();
+}
+
+function draw() {
+  if (tickets.length === 0) return;
+  drawBtn.disabled = true;
+  raffleTitle.textContent = "שולפים פתק…";
+  const W = window.innerWidth, H = window.innerHeight;
+  const winIdx = Math.floor(Math.random() * tickets.length);
+
+  // הפתקים האחרים מתעמעמים, הזוכה עף למרכז
+  tickets.forEach((t, i) => {
+    if (i === winIdx) {
+      t.style.left = (W/2 - 58) + "px";
+      t.style.top  = (H/2 - 39) + "px";
+      t.style.transform = "rotate(0deg) scale(1.15)";
+      t.style.zIndex = 65;
+    } else {
+      t.style.opacity = "0.12";
+      t.style.transform += " scale(.7)";
+    }
+  });
+
+  const p = people[Number(tickets[winIdx].dataset.idx)];
+  setTimeout(() => {
+    tickets[winIdx].style.opacity = "0";
+    wname.textContent = p.name;
+    wchoice.textContent = "💛 " + p.choice;
+    raffleTitle.textContent = "🎉 מזל טוב! 🎉";
+    winnerEl.classList.add("reveal");
+    burstConfetti();
+    againBtn.classList.remove("hidden");
+  }, 1100);
+}
+
+function burstConfetti() {
+  const colors = ["#ffd87a", "#f0b94a", "#fff4d6", "#b8801f"];
+  for (let i = 0; i < 90; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = colors[i % colors.length];
+    c.style.animation = `fall ${2 + Math.random()*2.5}s linear ${Math.random()*0.6}s forwards`;
+    c.style.borderRadius = Math.random() > .5 ? "2px" : "50%";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+document.getElementById("openRaffle").onclick = openRaffle;
+drawBtn.onclick = draw;
+document.getElementById("closeBtn").onclick = () => { raffle.classList.remove("show"); clearInterval(shuffleTimer); };
+againBtn.onclick = () => { winnerEl.classList.remove("reveal"); drawBtn.classList.remove("hidden"); againBtn.classList.add("hidden"); buildTickets(); startShuffle(); };
+</script>
+</body>
+</html>
