@@ -73,12 +73,12 @@
   @keyframes pop { from { transform: scale(.85); opacity:0 } to { transform: scale(1); opacity:1 } }
   .hidden { display: none !important; }
 
-  /* רקע: המשך ישיר של הגרפיקה (חום #271201) עם גרדיאנט לשחור בתחתית */
-  body.form-page { background: #000; }
-  body.form-page .scene {
-    background: linear-gradient(180deg, #271201 0%, #271201 28%, #190c02 62%, #000000 100%);
+  /* רקע: המשך ישיר של הגרפיקה (חום #271201) עם גרדיאנט לשחור בתחתית הדף */
+  body.form-page {
+    height: auto; min-height: 100%;
+    background: linear-gradient(180deg, #271201 0%, #271201 42%, #160b02 78%, #000000 100%);
   }
-  body.form-page .scene::before, body.form-page .scene::after { display: none; }
+  body.form-page .scene { display: none; }
 </style>
 </head>
 <body class="form-page">
