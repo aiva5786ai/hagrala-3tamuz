@@ -195,7 +195,7 @@ function render() {
     card.className = "namecard";
     card.dataset.id = p.id;
     card.style.animationDelay = `0s, ${(idx % 12) * .25}s`;
-    card.innerHTML = `<div class="nm">${escapeHtml(p.name)}</div>`;
+    card.innerHTML = `<div class="nm">${escapeHtml(p.name)}</div><div class="ch">${escapeHtml(p.choice)}</div>`;
     grid.appendChild(card);
   });
 }
