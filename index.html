@@ -73,10 +73,9 @@
   @keyframes pop { from { transform: scale(.85); opacity:0 } to { transform: scale(1); opacity:1 } }
   .hidden { display: none !important; }
 
-  /* רקע שממשיך את הגרדיאנט של הגרפיקה: חום (כמו תחתית הגרפיקה) → שחור */
-  body.form-page .scene {
-    background: linear-gradient(180deg, #311d0c 0%, #261405 30%, #160c04 62%, #000000 100%);
-  }
+  /* רקע מלא בצבע התחתית המדויק של הגרפיקה — המשך ישיר */
+  body.form-page { background: #271201; }
+  body.form-page .scene { background: #271201; }
   body.form-page .scene::before, body.form-page .scene::after { display: none; }
 </style>
 </head>
