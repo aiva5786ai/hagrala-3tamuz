@@ -95,7 +95,6 @@
 
 <!-- מסך הזנת שמות -->
 <div class="setup" id="setup">
-  <div class="kicker">הגרלה</div>
   <h1 class="gold-text">הגרלת כרטיסים</h1>
   <p class="sub">הדביקו רשימת שמות — שם בכל שורה (או מופרדים בפסיקים),<br>ולחצו להתחלת ההגרלה. הכל נשאר אצלכם בלבד.</p>
 
@@ -122,7 +121,7 @@
     <div class="wname" id="wname"></div>
   </div>
   <div class="controls">
-    <button class="btn-gold" id="drawBtn">שליפת פתק 🎲</button>
+    <button class="btn-gold" id="drawBtn">שליפת פתק</button>
     <button class="btn-ghost" id="againBtn">ערבוב והגרלה מחדש</button>
     <button class="btn-ghost" id="backBtn">עריכת הרשימה</button>
   </div>
@@ -201,17 +200,9 @@ function scatter() {
 
 function startShuffle() {
   $("rvTitle").textContent = "מערבבים את הפתקים…";
-  $("drawBtn").disabled = true;
-  let rounds = 0;
+  $("drawBtn").disabled = false;          // אפשר לשלוף בכל רגע
   clearInterval(shuffleTimer);
-  shuffleTimer = setInterval(() => {
-    scatter();
-    if (++rounds >= 4) {
-      clearInterval(shuffleTimer);
-      $("rvTitle").textContent = "הפתקים מוכנים — אפשר לשלוף!";
-      $("drawBtn").disabled = false;
-    }
-  }, 700);
+  shuffleTimer = setInterval(scatter, 700); // ממשיך להתערבב עד השליפה
 }
 
 function openRaffle() {
@@ -224,6 +215,7 @@ function openRaffle() {
 
 function draw() {
   if (tickets.length === 0) return;
+  clearInterval(shuffleTimer);            // עצירת הערבוב ברגע השליפה
   $("drawBtn").disabled = true;
   $("rvTitle").textContent = "שולפים פתק…";
   const W = window.innerWidth, H = window.innerHeight;
